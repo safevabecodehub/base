@@ -30,6 +30,8 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
   const [category, setCategory] = useState<ToolCategory | 'all'>(initialCategory);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<'title-asc' | 'title-desc'>('title-asc');
+  const [view, setView] = useState<'grid' | 'table'>('grid');
+  const [tagFilter, setTagFilter] = useState<string>('all');
 
   const allDocsData = useAllDocsData();
   const defaultPluginData = allDocsData.default;
@@ -62,11 +64,27 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
       });
   }, [allDocsData]);
 
+  const availableCategories = useMemo(() => {
+    const set = new Set<ToolCategory>();
+    entries.forEach((e) => set.add(e.category));
+    return Array.from(set).sort((a, b) => CATEGORY_LABEL[a].localeCompare(CATEGORY_LABEL[b]));
+  }, [entries]);
+
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    entries.forEach((e) => e.tags.forEach((t) => set.add(t)));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [entries]);
+
   const filtered = useMemo(() => {
     let items = entries;
 
     if (category !== 'all') {
       items = items.filter((item) => item.category === category);
+    }
+
+    if (tagFilter !== 'all') {
+      items = items.filter((item) => item.tags.includes(tagFilter));
     }
 
     if (query.trim()) {
@@ -87,13 +105,13 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
     });
 
     return items;
-  }, [category, query, sort]);
+  }, [category, query, sort, tagFilter, entries]);
 
   return (
     <section className="margin-vert--lg">
       <div className="container">
         <div className="row margin-bottom--sm">
-          <div className="col col--4">
+          <div className="col col--3">
             <label className="margin-right--sm">
               Категория
               <select
@@ -101,15 +119,31 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ToolCategory | 'all')}>
                 <option value="all">Все</option>
-                <option value="ide">IDE</option>
-                <option value="cli">CLI</option>
-                <option value="llm">LLM</option>
-                <option value="mcp">MCP</option>
-                <option value="service">Сервисы</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {CATEGORY_LABEL[cat]}
+                  </option>
+                ))}
               </select>
             </label>
           </div>
-          <div className="col col--4">
+          <div className="col col--3">
+            <label className="margin-right--sm">
+              Тег
+              <select
+                className="margin-left--sm"
+                value={tagFilter}
+                onChange={(e) => setTagFilter(e.target.value)}>
+                <option value="all">Все</option>
+                {availableTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="col col--3">
             <label className="margin-right--sm">
               Поиск
               <input
@@ -121,7 +155,7 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
               />
             </label>
           </div>
-          <div className="col col--4">
+          <div className="col col--3">
             <label className="margin-right--sm">
               Сортировка
               <select
@@ -133,42 +167,88 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
               </select>
             </label>
           </div>
+          <div className="col col--12 margin-top--sm">
+            <div className="button-group button-group--inline">
+              <button
+                type="button"
+                className={`button button--sm ${view === 'grid' ? 'button--primary' : ''}`}
+                onClick={() => setView('grid')}>
+                Плитка
+              </button>
+              <button
+                type="button"
+                className={`button button--sm ${view === 'table' ? 'button--primary' : ''}`}
+                onClick={() => setView('table')}>
+                Таблица
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="row">
-          {filtered.map((item) => (
-            <div key={item.id} className="col col--4 margin-bottom--lg">
-              <div className="card">
-                <div className="card__header">
-                  <h3>{item.title}</h3>
-                </div>
-                <div className="card__body">
-                  <p>{item.description}</p>
-                  <p>
-                    <strong>Категория:</strong> {CATEGORY_LABEL[item.category]}
-                  </p>
-                  <p>
-                    <strong>Теги:</strong> {item.tags.join(', ')}
-                  </p>
-                  <p>
-                    <strong>Статус:</strong> {item.status}
-                  </p>
-                </div>
-                <div className="card__footer">
-                  <Link className="button button--secondary button--block" to={item.path}>
-                    Открыть заметку
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {filtered.length === 0 && (
+        {filtered.length === 0 && (
+          <div className="row">
             <div className="col col--12">
               <p>Ничего не найдено по текущим фильтрам.</p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {filtered.length > 0 && view === 'grid' && (
+          <div className="row">
+            {filtered.map((item) => (
+              <div key={item.id} className="col col--4 margin-bottom--lg">
+                <Link className="card" to={item.path}>
+                  <div className="card__header">
+                    <h3>{item.title}</h3>
+                  </div>
+                  <div className="card__body">
+                    <p>{item.description}</p>
+                    <p>
+                      <strong>Категория:</strong> {CATEGORY_LABEL[item.category]}
+                    </p>
+                    <p>
+                      <strong>Теги:</strong> {item.tags.join(', ')}
+                    </p>
+                    <p>
+                      <strong>Статус:</strong> {item.status}
+                    </p>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {filtered.length > 0 && view === 'table' && (
+          <div className="row">
+            <div className="col col--12">
+              <div className="table-container">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>Категория</th>
+                      <th>Теги</th>
+                      <th>Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((item) => (
+                      <tr key={item.id}>
+                        <td>
+                          <Link to={item.path}>{item.title}</Link>
+                        </td>
+                        <td>{CATEGORY_LABEL[item.category]}</td>
+                        <td>{item.tags.join(', ')}</td>
+                        <td>{item.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
