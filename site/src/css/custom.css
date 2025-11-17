@@ -65,6 +65,7 @@
 .tools-section-card h3,
 .tools-card h3 {
   color: var(--ifm-font-color-base);
+  font-size: 0.9rem; /* ~30% меньше стандартного размера */
 }
 
 .tools-card {
@@ -98,7 +99,9 @@
 }
 
 .tools-badge--category {
-  font-weight: 500;
+  font-weight: 600;
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
 }
 
 .tools-badge--tag {

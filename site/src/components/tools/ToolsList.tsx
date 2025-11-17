@@ -44,14 +44,14 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
       .map((doc) => {
         const d = doc as any;
         const parts = d.id.split('/');
-        // tools/<category>/...
-        const rawCategory = parts[1] ?? 'ide';
-        const allowedCategories: ToolCategory[] = ['ide', 'cli', 'llm', 'mcp', 'service'];
-        const categoryPart = (allowedCategories.includes(rawCategory as ToolCategory)
-          ? rawCategory
-          : 'ide') as ToolCategory;
         const frontMatter = d.frontMatter ?? {};
         const status = (frontMatter.status as ToolEntry['status']) ?? 'draft';
+
+        const docType = typeof frontMatter.type === 'string' ? (frontMatter.type as string) : undefined;
+        if (docType === 'reference') {
+          // Хабовые/категорийные страницы не показываем в плитке
+          return null;
+        }
 
         const rawFrontmatterTags = frontMatter.tags;
         const rawMetadataTags = (d.tags ?? []) as unknown[];
@@ -81,10 +81,19 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
           : [];
 
         const id = d.id as string;
-
         const slugPart = parts[2] ?? parts[1] ?? id;
-        const derivedTags = ['tools', categoryPart, slugPart];
 
+        const allowedCategories: ToolCategory[] = ['ide', 'cli', 'llm', 'mcp', 'service'];
+        const categoryFromFrontmatter = frontMatter.category as ToolCategory | undefined;
+        const categoryFromTags = allowedCategories.find((cat) =>
+          [...tagsFromFrontmatter, ...tagsFromMetadata].includes(cat),
+        );
+        const categoryPart =
+          categoryFromFrontmatter && allowedCategories.includes(categoryFromFrontmatter)
+            ? categoryFromFrontmatter
+            : (categoryFromTags ?? 'ide');
+
+        const derivedTags = ['tools', categoryPart, slugPart];
         const tags = [...new Set([...tagsFromFrontmatter, ...tagsFromMetadata, ...derivedTags])];
 
         const titleFromFrontmatter = typeof frontMatter.title === 'string' ? frontMatter.title : undefined;
@@ -104,7 +113,8 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
           tags,
           status,
         };
-      });
+      })
+      .filter((entry): entry is ToolEntry => entry !== null);
   }, [allDocsData]);
 
   const availableCategories = useMemo(() => {
@@ -259,17 +269,6 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
                           {tag}
                         </span>
                       ))}
-                      <span
-                        className={
-                          'tools-badge tools-badge--status ' +
-                          `tools-badge--status-${item.status}`
-                        }>
-                        {item.status === 'draft'
-                          ? 'Draft'
-                          : item.status === 'stable'
-                          ? 'Stable'
-                          : 'Needs review'}
-                      </span>
                     </div>
                   </div>
                 </Link>
