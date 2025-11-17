@@ -1,47 +1,20 @@
 import React, {useMemo, useState, type ReactElement} from 'react';
 import Link from '@docusaurus/Link';
+import {useAllDocsData} from '@docusaurus/plugin-content-docs/client';
+
+type ToolCategory = 'ide' | 'cli' | 'llm' | 'mcp' | 'service';
 
 interface ToolEntry {
   id: string;
   title: string;
   description: string;
   path: string;
-  category: 'ide' | 'cli' | 'llm' | 'mcp' | 'service';
+  category: ToolCategory;
   tags: string[];
   status: 'draft' | 'stable' | 'needs-review';
 }
 
-const ENTRIES: ToolEntry[] = [
-  {
-    id: 'cursor',
-    title: 'Cursor',
-    description: 'IDE с глубокой интеграцией LLM для разработки.',
-    path: '/docs/tools/ide/cursor',
-    category: 'ide',
-    tags: ['ide', 'cursor'],
-    status: 'draft',
-  },
-  {
-    id: 'windsurf',
-    title: 'Windsurf',
-    description: 'IDE с акцентом на AI-помощников.',
-    path: '/docs/tools/ide/windsurf',
-    category: 'ide',
-    tags: ['ide', 'windsurf'],
-    status: 'draft',
-  },
-  {
-    id: 'zed',
-    title: 'Zed',
-    description: 'Быстрый редактор с командной работой и AI.',
-    path: '/docs/tools/ide/zed',
-    category: 'ide',
-    tags: ['ide', 'zed'],
-    status: 'draft',
-  },
-];
-
-const CATEGORY_LABEL: Record<ToolEntry['category'], string> = {
+const CATEGORY_LABEL: Record<ToolCategory, string> = {
   ide: 'IDE',
   cli: 'CLI',
   llm: 'LLM',
@@ -50,16 +23,47 @@ const CATEGORY_LABEL: Record<ToolEntry['category'], string> = {
 };
 
 interface ToolsListProps {
-  initialCategory?: ToolEntry['category'] | 'all';
+  initialCategory?: ToolCategory | 'all';
 }
 
 export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactElement {
-  const [category, setCategory] = useState<ToolEntry['category'] | 'all'>(initialCategory);
+  const [category, setCategory] = useState<ToolCategory | 'all'>(initialCategory);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<'title-asc' | 'title-desc'>('title-asc');
 
+  const allDocsData = useAllDocsData();
+  const defaultPluginData = allDocsData.default;
+  const currentVersion = defaultPluginData.versions[0];
+  const allDocs = Object.values(currentVersion.docs);
+
+  const entries: ToolEntry[] = useMemo(() => {
+    return allDocs
+      .filter((doc) => doc.id.startsWith('tools/'))
+      .map((doc) => {
+        const d = doc as any;
+        const parts = d.id.split('/');
+        // tools/<category>/...
+        const categoryPart = (parts[1] ?? 'ide') as ToolCategory;
+        const frontMatter = d.frontMatter ?? {};
+        const status = (frontMatter.status as ToolEntry['status']) ?? 'draft';
+        const tags: string[] = Array.isArray(frontMatter.tags)
+          ? frontMatter.tags.map((t: unknown) => (typeof t === 'string' ? t : '')).filter(Boolean)
+          : [];
+
+        return {
+          id: d.id as string,
+          title: (d.title as string) ?? '',
+          description: (d.description as string) ?? '',
+          path: (d.path as string) ?? '#',
+          category: categoryPart,
+          tags,
+          status,
+        };
+      });
+  }, [allDocsData]);
+
   const filtered = useMemo(() => {
-    let items = ENTRIES;
+    let items = entries;
 
     if (category !== 'all') {
       items = items.filter((item) => item.category === category);
@@ -95,7 +99,7 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
               <select
                 className="margin-left--sm"
                 value={category}
-                onChange={(e) => setCategory(e.target.value as ToolsListProps['initialCategory'])}>
+                onChange={(e) => setCategory(e.target.value as ToolCategory | 'all')}>
                 <option value="all">Все</option>
                 <option value="ide">IDE</option>
                 <option value="cli">CLI</option>
