@@ -45,7 +45,11 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
         const d = doc as any;
         const parts = d.id.split('/');
         // tools/<category>/...
-        const categoryPart = (parts[1] ?? 'ide') as ToolCategory;
+        const rawCategory = parts[1] ?? 'ide';
+        const allowedCategories: ToolCategory[] = ['ide', 'cli', 'llm', 'mcp', 'service'];
+        const categoryPart = (allowedCategories.includes(rawCategory as ToolCategory)
+          ? rawCategory
+          : 'ide') as ToolCategory;
         const frontMatter = d.frontMatter ?? {};
         const status = (frontMatter.status as ToolEntry['status']) ?? 'draft';
         const tags: string[] = Array.isArray(frontMatter.tags)
@@ -66,7 +70,11 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
 
   const availableCategories = useMemo(() => {
     const set = new Set<ToolCategory>();
-    entries.forEach((e) => set.add(e.category));
+    entries.forEach((e) => {
+      if (CATEGORY_LABEL[e.category]) {
+        set.add(e.category);
+      }
+    });
     return Array.from(set).sort((a, b) => CATEGORY_LABEL[a].localeCompare(CATEGORY_LABEL[b]));
   }, [entries]);
 
