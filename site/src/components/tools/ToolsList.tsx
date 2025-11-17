@@ -80,14 +80,24 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
               .filter(Boolean)
           : [];
 
-        const tags = [...new Set([...tagsFromFrontmatter, ...tagsFromMetadata])];
-
         const id = d.id as string;
+
+        const slugPart = parts[2] ?? parts[1] ?? id;
+        const derivedTags = ['tools', categoryPart, slugPart];
+
+        const tags = [...new Set([...tagsFromFrontmatter, ...tagsFromMetadata, ...derivedTags])];
+
         const titleFromFrontmatter = typeof frontMatter.title === 'string' ? frontMatter.title : undefined;
+        const titleFromMetadata = typeof d.title === 'string' ? (d.title as string) : undefined;
+        const humanizedFromSlug = slugPart
+          .split(/[\/]/)
+          .pop()
+          ?.replace(/[-_]+/g, ' ')
+          .replace(/\b\w/g, (ch: string) => ch.toUpperCase());
 
         return {
           id,
-          title: titleFromFrontmatter ?? (d.title as string) ?? id,
+          title: titleFromFrontmatter ?? titleFromMetadata ?? humanizedFromSlug ?? id,
           description: (d.description as string) ?? '',
           path: (d.path as string) ?? '#',
           category: categoryPart,
@@ -204,11 +214,7 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
                   <option value="title-desc">По названию (Я→А)</option>
                 </select>
               </label>
-            </div>
-          </div>
-          <div className="row margin-top--sm tools-toolbar__row">
-            <div className="col col--12">
-              <div className="button-group button-group--inline">
+              <div className="tools-toolbar__view">
                 <button
                   type="button"
                   className={`button button--sm ${view === 'grid' ? 'button--primary' : ''}`}

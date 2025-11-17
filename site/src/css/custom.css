@@ -50,6 +50,13 @@
   gap: 0.25rem;
 }
 
+.tools-toolbar__view {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  justify-content: flex-end;
+}
+
 .tools-section-card {
   background-color: var(--ifm-color-emphasis-100);
   border-color: var(--ifm-color-emphasis-200);
