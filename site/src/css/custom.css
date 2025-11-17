@@ -28,3 +28,92 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Tools hub / list customizations */
+
+.tools-toolbar {
+  border-radius: var(--ifm-global-radius);
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.tools-toolbar__row {
+  align-items: flex-end;
+}
+
+.tools-toolbar select,
+.tools-toolbar input[type='search'] {
+  width: 100%;
+}
+
+.tools-toolbar .button-group {
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.tools-section-card {
+  background-color: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-200);
+}
+
+.tools-section-card h3,
+.tools-card h3 {
+  color: var(--ifm-font-color-base);
+}
+
+.tools-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tools-card__body {
+  flex: 1;
+}
+
+.tools-card__description {
+  margin-bottom: 0.5rem;
+}
+
+.tools-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.tools-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background-color: var(--ifm-color-emphasis-100);
+  color: var(--ifm-font-color-base);
+}
+
+.tools-badge--category {
+  font-weight: 500;
+}
+
+.tools-badge--tag {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.tools-badge--status-draft {
+  background-color: #fff7e6;
+  color: #8a6d3b;
+}
+
+.tools-badge--status-stable {
+  background-color: #e6ffed;
+  color: #276749;
+}
+
+.tools-badge--status-needs-review {
+  background-color: #fff0f0;
+  color: #9b2c2c;
+}
+
+/* Hide helper tools category used only to keep sidebar for tool notes */
+.theme-doc-sidebar-menu .tools-sidebar-hidden {
+  display: none;
+}

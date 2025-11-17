@@ -52,15 +52,42 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
           : 'ide') as ToolCategory;
         const frontMatter = d.frontMatter ?? {};
         const status = (frontMatter.status as ToolEntry['status']) ?? 'draft';
-        const tags: string[] = Array.isArray(frontMatter.tags)
-          ? frontMatter.tags.map((t: unknown) => (typeof t === 'string' ? t : '')).filter(Boolean)
+
+        const rawFrontmatterTags = frontMatter.tags;
+        const rawMetadataTags = (d.tags ?? []) as unknown[];
+
+        const tagsFromFrontmatter: string[] = Array.isArray(rawFrontmatterTags)
+          ? rawFrontmatterTags
+              .map((t: unknown) => {
+                if (typeof t === 'string') return t;
+                if (t && typeof t === 'object' && 'label' in t && typeof (t as any).label === 'string') {
+                  return (t as any).label as string;
+                }
+                return '';
+              })
+              .filter(Boolean)
           : [];
 
+        const tagsFromMetadata: string[] = Array.isArray(rawMetadataTags)
+          ? rawMetadataTags
+              .map((t: unknown) => {
+                if (typeof t === 'string') return t;
+                if (t && typeof t === 'object' && 'label' in t && typeof (t as any).label === 'string') {
+                  return (t as any).label as string;
+                }
+                return '';
+              })
+              .filter(Boolean)
+          : [];
+
+        const tags = [...new Set([...tagsFromFrontmatter, ...tagsFromMetadata])];
+
         const id = d.id as string;
+        const titleFromFrontmatter = typeof frontMatter.title === 'string' ? frontMatter.title : undefined;
 
         return {
           id,
-          title: (d.title as string) ?? id,
+          title: titleFromFrontmatter ?? (d.title as string) ?? id,
           description: (d.description as string) ?? '',
           path: (d.path as string) ?? '#',
           category: categoryPart,
@@ -120,8 +147,8 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
   return (
     <section className="margin-vert--lg">
       <div className="container">
-        <div className="card padding--sm margin-bottom--md">
-          <div className="row">
+        <div className="card padding--sm margin-bottom--md tools-toolbar">
+          <div className="row tools-toolbar__row">
             <div className="col col--3">
               <label className="margin-bottom--xs display-block">
                 <span className="text--bold">Категория</span>
@@ -179,7 +206,7 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
               </label>
             </div>
           </div>
-          <div className="row margin-top--sm">
+          <div className="row margin-top--sm tools-toolbar__row">
             <div className="col col--12">
               <div className="button-group button-group--inline">
                 <button
@@ -211,21 +238,33 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
           <div className="row">
             {filtered.map((item) => (
               <div key={item.id} className="col col--4 margin-bottom--lg">
-                <Link className="card" to={item.path}>
+                <Link className="card tools-card" to={item.path}>
                   <div className="card__header">
                     <h3>{item.title}</h3>
                   </div>
-                  <div className="card__body">
-                    <p>{item.description}</p>
-                    <p>
-                      <strong>Категория:</strong> {CATEGORY_LABEL[item.category]}
-                    </p>
-                    <p>
-                      <strong>Теги:</strong> {item.tags.join(', ')}
-                    </p>
-                    <p>
-                      <strong>Статус:</strong> {item.status}
-                    </p>
+                  <div className="card__body tools-card__body">
+                    <p className="tools-card__description">{item.description}</p>
+                    <div className="tools-card__meta">
+                      <span className="tools-badge tools-badge--category">
+                        {CATEGORY_LABEL[item.category]}
+                      </span>
+                      {item.tags.map((tag) => (
+                        <span key={tag} className="tools-badge tools-badge--tag">
+                          {tag}
+                        </span>
+                      ))}
+                      <span
+                        className={
+                          'tools-badge tools-badge--status ' +
+                          `tools-badge--status-${item.status}`
+                        }>
+                        {item.status === 'draft'
+                          ? 'Draft'
+                          : item.status === 'stable'
+                          ? 'Stable'
+                          : 'Needs review'}
+                      </span>
+                    </div>
                   </div>
                 </Link>
               </div>

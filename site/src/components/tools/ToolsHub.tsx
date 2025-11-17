@@ -41,7 +41,7 @@ export function ToolsHub(): ReactElement {
         <div className="row">
           {sections.map((section) => (
             <div key={section.id} className="col col--4 margin-bottom--lg">
-              <Link className="card card--secondary" to={section.to}>
+              <Link className="card tools-section-card" to={section.to}>
                 <div className="card__header">
                   <h3>{section.title}</h3>
                 </div>
