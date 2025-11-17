@@ -56,9 +56,11 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
           ? frontMatter.tags.map((t: unknown) => (typeof t === 'string' ? t : '')).filter(Boolean)
           : [];
 
+        const id = d.id as string;
+
         return {
-          id: d.id as string,
-          title: (d.title as string) ?? '',
+          id,
+          title: (d.title as string) ?? id,
           description: (d.description as string) ?? '',
           path: (d.path as string) ?? '#',
           category: categoryPart,
@@ -118,77 +120,81 @@ export function ToolsList({initialCategory = 'ide'}: ToolsListProps): ReactEleme
   return (
     <section className="margin-vert--lg">
       <div className="container">
-        <div className="row margin-bottom--sm">
-          <div className="col col--3">
-            <label className="margin-right--sm">
-              Категория
-              <select
-                className="margin-left--sm"
-                value={category}
-                onChange={(e) => setCategory(e.target.value as ToolCategory | 'all')}>
-                <option value="all">Все</option>
-                {availableCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {CATEGORY_LABEL[cat]}
-                  </option>
-                ))}
-              </select>
-            </label>
+        <div className="card padding--sm margin-bottom--md">
+          <div className="row">
+            <div className="col col--3">
+              <label className="margin-bottom--xs display-block">
+                <span className="text--bold">Категория</span>
+                <select
+                  className="margin-top--xs"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ToolCategory | 'all')}>
+                  <option value="all">Все</option>
+                  {availableCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {CATEGORY_LABEL[cat]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col col--3">
+              <label className="margin-bottom--xs display-block">
+                <span className="text--bold">Тег</span>
+                <select
+                  className="margin-top--xs"
+                  value={tagFilter}
+                  onChange={(e) => setTagFilter(e.target.value)}>
+                  <option value="all">Все</option>
+                  {availableTags.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col col--3">
+              <label className="margin-bottom--xs display-block">
+                <span className="text--bold">Поиск</span>
+                <input
+                  className="margin-top--xs"
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Название, тег, описание"
+                />
+              </label>
+            </div>
+            <div className="col col--3">
+              <label className="margin-bottom--xs display-block">
+                <span className="text--bold">Сортировка</span>
+                <select
+                  className="margin-top--xs"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as typeof sort)}>
+                  <option value="title-asc">По названию (А→Я)</option>
+                  <option value="title-desc">По названию (Я→А)</option>
+                </select>
+              </label>
+            </div>
           </div>
-          <div className="col col--3">
-            <label className="margin-right--sm">
-              Тег
-              <select
-                className="margin-left--sm"
-                value={tagFilter}
-                onChange={(e) => setTagFilter(e.target.value)}>
-                <option value="all">Все</option>
-                {availableTags.map((tag) => (
-                  <option key={tag} value={tag}>
-                    {tag}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="col col--3">
-            <label className="margin-right--sm">
-              Поиск
-              <input
-                className="margin-left--sm"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Название, тег, описание"
-              />
-            </label>
-          </div>
-          <div className="col col--3">
-            <label className="margin-right--sm">
-              Сортировка
-              <select
-                className="margin-left--sm"
-                value={sort}
-                onChange={(e) => setSort(e.target.value as typeof sort)}>
-                <option value="title-asc">По названию (А→Я)</option>
-                <option value="title-desc">По названию (Я→А)</option>
-              </select>
-            </label>
-          </div>
-          <div className="col col--12 margin-top--sm">
-            <div className="button-group button-group--inline">
-              <button
-                type="button"
-                className={`button button--sm ${view === 'grid' ? 'button--primary' : ''}`}
-                onClick={() => setView('grid')}>
-                Плитка
-              </button>
-              <button
-                type="button"
-                className={`button button--sm ${view === 'table' ? 'button--primary' : ''}`}
-                onClick={() => setView('table')}>
-                Таблица
-              </button>
+          <div className="row margin-top--sm">
+            <div className="col col--12">
+              <div className="button-group button-group--inline">
+                <button
+                  type="button"
+                  className={`button button--sm ${view === 'grid' ? 'button--primary' : ''}`}
+                  onClick={() => setView('grid')}>
+                  Плитка
+                </button>
+                <button
+                  type="button"
+                  className={`button button--sm ${view === 'table' ? 'button--primary' : ''}`}
+                  onClick={() => setView('table')}>
+                  Таблица
+                </button>
+              </div>
             </div>
           </div>
         </div>
