@@ -9,6 +9,7 @@ author: ""
 ---
 
 import { ToolsHub } from '@site/src/components/tools/ToolsHub';
+import { ToolsList } from '@site/src/components/tools/ToolsList';
 
 # Инструменты вайб-кодера
 
@@ -16,4 +17,8 @@ import { ToolsHub } from '@site/src/components/tools/ToolsHub';
 
 <ToolsHub />
 
-> В следующих итерациях здесь появится интеграция с системой тегов и списком заметок по каждому инструменту.
+## Заметки по инструментам
+
+<ToolsList initialCategory="ide" />
+
+> Сейчас список заполнен вручную на основе заметок раздела IDE как прототип. В следующих итерациях мы свяжем его с реальными метаданными всех заметок в разделе Tools.
