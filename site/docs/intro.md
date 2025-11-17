@@ -2,46 +2,99 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Добро пожаловать в SafeVibe Knowledge Base
 
-Let's discover **Docusaurus in less than 5 minutes**.
+SafeVibe — это база знаний вайб-кодеров: гайды, обзоры инструментов, рабочие процессы и мини-аппы, которые помогают собирать и использовать знания сообщества.
 
-## Getting Started
+На этой странице — обзор структуры базы и первый ориентир, куда идти дальше.
 
-Get started by **creating a new site**.
+---
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Основные разделы базы
 
-### What you'll need
+Вся документация структурирована по доменам (подробнее см. `meta/taxonomy`):
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+- **Concepts** — базовые идеи и философия вайб-кодинга.
+  - Что такое вайб-кодер.
+  - Принципы работы с базой знаний и мини-аппами.
 
-## Generate a new site
+- **Tools** — инструменты и сервисы.
+  - IDE, плагины, AI-инструменты (включая агентов и LLM).
+  - Обзоры, сравнения, best practices по настройке.
 
-Generate a new Docusaurus site using the **classic template**.
+- **Workflows** — рабочие процессы и чек-листы.
+  - Как запускать типовые сценарии (playbooks).
+  - Конвейеры: от идеи до мини-аппы или статьи.
 
-The classic template will automatically be added to your project after you run the command:
+- **Apps** — мини-аппы SafeVibe.
+  - Документация и гайды по мини-аппам.
+  - TagExplorer, планировщики, визуализации и другие интерактивы.
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+- **Community** — сообщество и форматы.
+  - Как присоединиться к чатам и каналам.
+  - Правила и договорённости внутри сообщества.
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+- **Meta** — архитектура и правила.
+  - Как устроен этот репозиторий.
+  - Таксономия, стиль контента, роли агентов.
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+---
 
-## Start your site
+## Типы заметок и теги
 
-Run the development server:
+Каждая заметка имеет тип и теги (описаны подробнее в `meta/taxonomy` и `.rules/content`):
 
-```bash
-cd my-website
-npm run start
-```
+- **Типы (`type`)**:
+  - `guide` — пошаговый гайд.
+  - `reference` — справочная информация.
+  - `review` — обзор инструмента или ресурса.
+  - `pattern` — паттерн/практика.
+  - `playbook` — сценарий с шагами.
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+- **Теги (`tags`)** помогают фильтровать контент:
+  - Тематика: `ai`, `automation`, `frontend`, `backend`, `obsidian`, `docusaurus`, `shadcn`, `tools`, `productivity`.
+  - Уровень: `beginner`, `intermediate`, `advanced`.
+  - Статус: `draft`, `stable`, `needs-review`.
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+> Рекомендация: у каждой заметки минимум один тематический и один типовой тег.
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+---
+
+## Как пользоваться базой
+
+1. **Старт для чтения**
+   - Начни с раздела **Concepts**, чтобы понять философию.
+   - Перейди к **Tools** и **Workflows**, чтобы подобрать стек и рабочие сценарии.
+
+2. **Поиск по тегам**
+   - Используй встроенный поиск Docusaurus.
+   - Ориентируйся по тегам и структуре сайдбара.
+
+3. **Мини-аппы**
+   - Раздел **Apps** собирает интерактивные штуки поверх базы.
+   - Со временем здесь появятся TagExplorer, планировщики стеков и др.
+
+---
+
+## Как контрибьютить
+
+Если ты хочешь добавить или улучшить заметку:
+
+1. Ознакомься с разделами:
+   - `meta/contributing` — процесс контрибьюции.
+   - `meta/content-style` — стиль и структура статей.
+   - `.rules/content` — строгие правила по фронтматтеру и именованию файлов.
+
+2. Выбери подходящий шаблон из `meta/templates` (guide/review/pattern/playbook).
+
+3. Создай новую заметку в нужной папке (`concepts`, `tools`, `workflows`, `apps`, `community`, `meta`).
+
+4. Открой Pull Request с коротким описанием, какие проблемы решает твоя заметка.
+
+---
+
+## Дальше
+
+- Посмотри раздел **Meta**, чтобы лучше понять архитектуру SafeVibe.
+- Загляни в **Tools** и **Workflows**, чтобы собрать свой стартовый стек вайб-кодинга.
+- Подпишись на каналы сообщества (ссылки будут в разделе Community).

@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
@@ -17,15 +16,74 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
-          </Link>
-        </div>
+        <div className={styles.buttons}></div>
       </div>
     </header>
+  );
+}
+
+function HomepageCards() {
+  return (
+    <section className="margin-vert--lg">
+      <div className="container">
+        <div className="row">
+          <div className="col col--4">
+            <div className="card">
+              <div className="card__header">
+                <h3>База знаний</h3>
+              </div>
+              <div className="card__body">
+                <p>
+                  Вход в основную базу знаний вайб-кодеров: гайды, обзоры,
+                  плейбуки и паттерны.
+                </p>
+              </div>
+              <div className="card__footer">
+                <Link className="button button--primary button--block" to="/docs/intro">
+                  Открыть базу знаний
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="col col--4">
+            <div className="card">
+              <div className="card__header">
+                <h3>Блог</h3>
+              </div>
+              <div className="card__body">
+                <p>
+                  Истории, обновления и заметки о развитии SafeVibe и
+                  экспериментальные форматы.
+                </p>
+              </div>
+              <div className="card__footer">
+                <Link className="button button--secondary button--block" to="/blog">
+                  Перейти в блог
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="col col--4">
+            <div className="card">
+              <div className="card__header">
+                <h3>Мини-аппы</h3>
+              </div>
+              <div className="card__body">
+                <p>
+                  Интерактивные инструменты и утилиты поверх базы знаний:
+                  TagExplorer, планировщики и другие.
+                </p>
+              </div>
+              <div className="card__footer">
+                <Link className="button button--outline button--block" to="/docs/apps/intro">
+                  Открыть раздел мини-апп
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -33,11 +91,11 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={siteConfig.title}
+      description="SafeVibe — база знаний и мини-аппы для вайб-кодеров">
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        <HomepageCards />
       </main>
     </Layout>
   );
