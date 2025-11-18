@@ -1,8 +1,15 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
+title: "О проекте"
+slug: /about
+description: "Что такое SafeVibe Knowledge Base и как ей пользоваться"
+tags: ["meta", "about"]
+type: "guide"
+status: "stable"
+author: "SafeVibe Team"
 ---
 
-# Добро пожаловать в SafeVibe Knowledge Base
+# О проекте SafeVibe Knowledge Base
 
 SafeVibe — это база знаний вайб-кодеров: гайды, обзоры инструментов, рабочие процессы и мини-аппы, которые помогают собирать и использовать знания сообщества.
 
